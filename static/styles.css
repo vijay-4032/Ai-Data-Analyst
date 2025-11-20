@@ -1,0 +1,120 @@
+/* static/styles.css - teal neumorphic dashboard look */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#e8fffb; /* fallback */
+  --teal-1:#00C5B4;
+  --teal-2:#00A89A;
+  --card-bg: #ffffff;
+  --muted:#8b98a5;
+}
+
+body {
+  margin:0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, #00C5B4 0%, #2DE6D4 100%);
+  min-height:100vh;
+  color:#0f1724;
+}
+
+/* app shell */
+.app-shell {
+  display:flex;
+  gap: 24px;
+  padding: 40px;
+}
+
+/* sidebar */
+.sidebar{
+  width:84px;
+  border-radius:18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  padding:20px 12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  backdrop-filter: blur(6px);
+}
+
+.brand .logo{
+  width:56px; height:56px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #00BFA0, #00A089);
+  color:white; display:flex; align-items:center; justify-content:center;
+  font-weight:700; box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  margin-bottom: 18px;
+}
+
+/* icons vertical */
+.icons { display:flex; flex-direction:column; gap:14px; width:100%;}
+.icon-btn{
+  width:100%; height:48px; border-radius:10px; border:none; background:transparent; color:white;
+  display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:18px;
+}
+.icon-btn.active { background: rgba(255,255,255,0.06); }
+
+/* main area */
+.main{
+  flex:1;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 20px 50px rgba(8,64,51,0.15);
+}
+
+/* topbar */
+.topbar{ display:flex; align-items:center; justify-content:space-between; padding-bottom:10px; }
+.title{ font-size:20px; font-weight:700; color:#0b2f2a; }
+.actions{ display:flex; align-items:center; gap:12px; }
+.btn{ border:none; padding:8px 14px; border-radius:12px; cursor:pointer; background:#f3f7f6; }
+.btn.primary{ background: linear-gradient(90deg,#00C5B4,#00A89A); color:white; font-weight:700; }
+.btn.upload{ background:#ffffff; border:1px solid #edf6f5; }
+
+/* content */
+.content{ padding-top:18px; display:flex; flex-direction:column; gap:18px; }
+
+/* KPI row */
+.kpi-row{ display:flex; gap:14px; flex-wrap:wrap; }
+.card{ background: var(--card-bg); border-radius:14px; padding:16px; box-shadow: 0 6px 18px rgba(14,21,25,0.06); }
+.kpi{ min-width:160px; flex: 0 0 200px; }
+.kpi-label{ color:var(--muted); font-size:13px; }
+.kpi-value{ font-size:20px; font-weight:700; margin-top:6px; color:#0b2f2a; }
+
+/* grid layout (2 columns main + right column) */
+.grid{ display:grid; grid-template-columns: 2fr 1fr; gap:16px; align-items:start; }
+.big-chart{ height:360px; }
+.donut{ height:240px; }
+.line-chart{ height:240px; margin-top:16px; }
+.right-small{ height:360px; padding:12px; overflow:auto; }
+
+/* card title */
+.card-title{ font-weight:700; color:#0b2f2a; margin-bottom:8px; }
+
+/* placeholders */
+.placeholder{ color:var(--muted); padding:40px; text-align:center; }
+
+/* query row */
+.query-row{ display:flex; gap:12px; align-items:center; padding:12px; margin-top:8px; }
+.query-row input[type="text"]{ flex:1; padding:12px; border-radius:10px; border:1px solid #eef6f5; }
+.analysis-result{ margin-top:12px; padding:12px; }
+
+/* suggestions */
+.suggestions{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; }
+.suggestions button{ background:transparent; border:none; text-align:left; color:#026a63; cursor:pointer; padding:6px; border-radius:8px; }
+
+/* mini kpi in analyzed result */
+.kpi-inline{ display:flex; gap:12px; margin:12px 0; }
+.mini-kpi{ background:#f7fffd; padding:8px; border-radius:8px; min-width:120px; }
+.mini-kpi .label{ color:#637d78; font-size:12px; }
+.mini-kpi .value{ font-weight:700; font-size:16px; color:#064f45; }
+
+/* small table styling for preview */
+table.table { width:100%; border-collapse:collapse; font-size:13px; }
+table.table th, table.table td { padding:8px; text-align:left; border-bottom:1px solid #f0f4f3; }
+
+/* responsive */
+@media (max-width: 980px) {
+  .app-shell { padding:18px; flex-direction:column; }
+  .grid { grid-template-columns: 1fr; }
+}
