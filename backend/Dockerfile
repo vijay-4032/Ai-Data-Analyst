@@ -17,9 +17,8 @@
         libpq-dev \
         && rm -rf /var/lib/apt/lists/*
     
-    # Create virtual environment
-    RUN python -m venv /opt/venv
-    ENV PATH="/opt/venv/bin:$PATH"
+    # Set working directory
+    WORKDIR /app
     
     # Install Python dependencies
     COPY requirements.txt .
@@ -33,8 +32,7 @@
     # Set environment variables
     ENV PYTHONDONTWRITEBYTECODE=1 \
         PYTHONUNBUFFERED=1 \
-        PYTHONPATH=/app \
-        PATH="/opt/venv/bin:$PATH"
+        PYTHONPATH=/app
     
     # Install runtime dependencies
     RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -50,8 +48,9 @@
     # Set working directory
     WORKDIR /app
     
-    # Copy virtual environment from builder
-    COPY --from=builder /opt/venv /opt/venv
+    # Copy installed packages from builder
+    COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+    COPY --from=builder /usr/local/bin /usr/local/bin
     
     # Copy application code
     COPY --chown=appuser:appgroup ./app ./app
@@ -71,7 +70,7 @@
         CMD curl -f http://localhost:8000/health || exit 1
     
     # Default command
-    CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
     
     
     # ----- Development Stage -----
@@ -94,4 +93,4 @@
     USER appuser
     
     # Override command for development (with hot reload)
-    CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

@@ -23,7 +23,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
+  defaultTheme = "dark",
   attribute = "class",
   enableSystem = true,
   disableTransitionOnChange = false,
@@ -42,6 +42,8 @@ export function ThemeProvider({
 
   // Apply theme to document
   const applyTheme = (newTheme: Theme) => {
+    if (typeof window === "undefined") return;
+    
     const root = document.documentElement;
     const resolved = newTheme === "system" ? getSystemTheme() : newTheme;
 
@@ -73,7 +75,9 @@ export function ThemeProvider({
   // Set theme and persist to localStorage
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    localStorage.setItem("ai-analyst-theme", newTheme);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("ai-analyst-theme", newTheme);
+    }
     applyTheme(newTheme);
   };
 
@@ -88,7 +92,7 @@ export function ThemeProvider({
 
   // Listen for system theme changes
   useEffect(() => {
-    if (!enableSystem) return;
+    if (!enableSystem || typeof window === "undefined") return;
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
@@ -102,28 +106,37 @@ export function ThemeProvider({
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, [theme, enableSystem]);
 
-  // Prevent flash of wrong theme
-  if (!mounted) {
-    return (
-      <div style={{ visibility: "hidden" }}>
+  // Always provide context value, even before mount
+  const value: ThemeContextType = {
+    theme,
+    setTheme,
+    resolvedTheme,
+  };
+
+  // Prevent flash of wrong theme by hiding content until mounted
+  return (
+    <ThemeContext.Provider value={value}>
+      <div style={{ visibility: mounted ? "visible" : "hidden" }}>
         {children}
       </div>
-    );
-  }
-
-  return (
-    <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme }}>
-      {children}
     </ThemeContext.Provider>
   );
 }
 
 // Hook to access theme context
-export function useTheme() {
+export function useTheme(): ThemeContextType {
   const context = useContext(ThemeContext);
+  
+  // Return default values if context is undefined (shouldn't happen with proper setup)
   if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider");
+    // Instead of throwing, return safe defaults for SSR/initial render
+    return {
+      theme: "dark",
+      setTheme: () => {},
+      resolvedTheme: "dark",
+    };
   }
+  
   return context;
 }
 

@@ -54,8 +54,11 @@ export interface Dataset {
     status: AnalysisStatus;
     insights: Insight[];
     charts: ChartConfig[];
+    kpis: KPIMetric[];
     summary: string;
+    error?: string;
     createdAt: string;
+    completedAt?: string;
   }
   
   export type AnalysisStatus = 
