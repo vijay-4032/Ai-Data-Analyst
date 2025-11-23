@@ -97,9 +97,9 @@ export const useChatStore = create<ChatState & ChatActions>()(
 
       // Panel actions
       openChat: () => {
-        const { messages } = get();
-        // Add welcome message if no messages
-        if (messages.length === 0) {
+        const { messages, currentSessionId } = get();
+        // Add welcome message if no messages and no session
+        if (messages.length === 0 && !currentSessionId) {
           set(
             {
               isOpen: true,

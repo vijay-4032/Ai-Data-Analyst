@@ -168,11 +168,22 @@ export function useAnalysis(options: UseAnalysisOptions = {}): UseAnalysisReturn
         // Initial poll
         await pollAnalysisStatus(analysisId);
       } catch (err) {
-        const message = err instanceof APIError ? err.message : "Failed to start analysis";
-        setError(message);
+        // If backend is unavailable, show helpful message
+        const message = err instanceof APIError ? err.message : "Backend unavailable";
+        
+        if (message.includes("fetch") || message.includes("Network")) {
+          toast.error(
+            "Backend not running", 
+            "Please start the backend server: cd backend && uvicorn app.main:app --reload"
+          );
+          setError("Backend server is not running. Please check the README for setup instructions.");
+        } else {
+          setError(message);
+          toast.error("Analysis failed", message);
+        }
+        
         setIsAnalyzing(false);
         setStoreAnalyzing(false);
-        toast.error("Analysis failed", message);
         onError?.(err instanceof Error ? err : new Error(message));
       } finally {
         setIsLoading(false);

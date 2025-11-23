@@ -50,8 +50,16 @@ class Settings(BaseSettings):
     @classmethod
     def parse_cors_origins(cls, v):
         if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",")]
-        return v
+            if not v or v.strip() == "":
+                return [
+                    "http://localhost:3000",
+                    "http://127.0.0.1:3000",
+                ]
+            return [origin.strip() for origin in v.split(",") if origin.strip()]
+        return v if v else [
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+        ]
     
     # ----- Database -----
     DATABASE_URL: str = Field(
@@ -85,8 +93,10 @@ class Settings(BaseSettings):
     @classmethod
     def parse_extensions(cls, v):
         if isinstance(v, str):
-            return [ext.strip() for ext in v.split(",")]
-        return v
+            if not v or v.strip() == "":
+                return [".csv", ".xlsx", ".xls"]
+            return [ext.strip() for ext in v.split(",") if ext.strip()]
+        return v if v else [".csv", ".xlsx", ".xls"]
     
     # ----- AWS S3 (Optional) -----
     AWS_ACCESS_KEY_ID: Optional[str] = None
